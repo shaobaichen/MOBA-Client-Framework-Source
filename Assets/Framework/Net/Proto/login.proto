@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package Game.Proto;
+
+// ===== 注册 =====
+
+// 注册请求
+message C2S_RegisterReq {
+  string account = 1;
+  string password_hash = 2;  // md5(password + 固定盐)
+}
+
+// 注册响应
+message S2C_RegisterRsp {
+  RegisterResult result = 1;
+  uint64 uid = 2;           // 新用户ID(仅成功时有效)
+}
+
+enum RegisterResult {
+  REGISTER_SUCCESS = 0;  
+  REGISTER_ACCOUNT_EXISTS = 1;
+  REGISTER_INVALID_INPUT = 2;
+}
+
+// ===== 登录 =====
+
+// 登录请求
+message C2S_LoginReq {
+  string account = 1;
+  string password_hash = 2;
+}
+
+// 登录响应
+message S2C_LoginRsp {
+  LoginResult result = 1;
+  string session_token = 2;  // 会话凭证(仅成功时有效)
+  PlayerData player_data = 3; // 玩家数据(仅成功时有效)
+  int64 server_time = 4;     // 服务器时间
+}
+
+enum LoginResult {
+  LOGIN_SUCCESS = 0;
+  LOGIN_ACCOUNT_NOT_EXIST = 1;
+  LOGIN_WRONG_PASSWORD = 2;
+  LOGIN_BANNED = 3;
+}
+
+// ===== 玩家数据 =====
+message PlayerData {
+  uint64 uid = 1;
+  string nickname = 2;
+  int32 level = 3;
+  int32 avatar_id = 4;
+  int64 gold = 5;
+  int64 diamond = 6;
+}
+
+

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package Game.Proto;
+
+//======聊天消息======
+
+
+//单条聊天消息
+message ChatMsg{
+    string from = 1;    //谁发的
+    string to = 2;      //发给谁
+    string text = 3;    //消息内容
+    int64 timestamp = 4;//发送时间戳(毫秒)
+    int64 msg_id = 5;   //消息ID(自增，用于排序)
+}
+
+//发送聊天消息
+message C2S_SendChatMsg{
+    string from = 1;    //谁发的
+    string to = 2;      //发给谁
+    string text = 3;    //消息内容
+    int64 timestamp = 4;//发送时间戳(毫秒)
+}
+
+//服务端推送聊天消息给接收方
+message S2C_ChatMsg{
+    string from = 1;    //谁发的
+    string to = 2;      //发给谁
+    string text = 3;    //消息内容
+    int64 timestamp = 4;//发送时间戳(毫秒)
+}
+
+//拉取聊天历史
+message C2S_GetChatHistory{
+    string my_account = 1;
+    string friend_account = 2;
+}
+
+//返回聊天历史
+message S2C_ChatHistory{
+    repeated ChatMsg messages = 1;
+}

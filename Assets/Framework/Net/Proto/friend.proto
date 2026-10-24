@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package Game.Proto;
+
+// 好友信息
+message FriendInfo {
+  uint64 uid = 1;
+  string account = 2;
+  string nickname = 3;
+  int32 level = 4;
+  int32 avatar_id = 5;
+  bool online = 6;
+}
+
+// 添加好友请求
+message C2S_AddFriend {
+  string my_account = 1;   // 我的账号
+  string target_account = 2;  // 对方的账号名
+}
+
+// 添加好友响应
+message S2C_AddFriendRsp {
+  AddFriendResult result = 1;
+  FriendInfo friend_info = 2;  // 仅成功时有效
+}
+
+enum AddFriendResult {
+  ADD_FRIEND_SUCCESS = 0;
+  ADD_FRIEND_NOT_FOUND = 1;      // 对方账号不存在
+  ADD_FRIEND_ALREADY_EXISTS = 2; // 已经是好友
+  ADD_FRIEND_SELF = 3;           // 不能添加自己
+}
+
+// 获取好友列表请求
+message C2S_GetFriendList {
+  string my_account = 1;
+}
+
+// 获取好友列表响应
+message S2C_FriendList {
+  repeated FriendInfo friends = 1;
+}
+
+// 好友在线状态变更推送(服务端主动推)
+message S2C_FriendStatusNotify {
+  string account = 1;   // 哪个好友
+  bool online = 2;      // 在线/离线
+}
+
+//====== 好友申请 ======
+//发送好友申请
+message C2S_SendFriendRequest{
+  string from = 1; //申请人
+  string to = 2;   //被申请人
+}
+
+//申请结果枚举
+enum FriendRequestResult{
+  FRIEND_REQUEST_ACCEPT = 0;
+  FRIEND_REQUEST_REJECTED = 1;
+}
+
+//服务端推送好友申请通知给被申请人
+message S2C_FriendRequestNotify{
+  string from = 1; //谁申请加我
+  string from_nickname = 2; //申请人名称
+  int32 from_level = 3;   //申请人等级
+}
+
+//被申请人响应申请(同意/拒绝)
+message C2S_RespondFriendRequest{
+  string my_account = 1;  //我(被申请人)
+  string from_account = 2; //申请人
+  bool accept = 3;  //true = 同意 , false = 拒绝 
+}
+
+//服务端返回响应结果给申请人
+message S2C_RespondFriendRequestRsp{
+  FriendRequestResult result = 1; 
+  FriendInfo friend_info = 2; //仅同意时有效
+}
+//====== 删除好友 ======
+message C2S_DeleteFriend{
+  string my_account = 1;
+  string friend_account = 2;
+}
+enum DeleteFriendResult{
+  DELETE_FRIEND_SUCCESS = 0;
+  DELETE_FRIEND_NOT_FOUND = 1;
+}
+message S2C_DeleteFriendRsp{
+  DeleteFriendResult result = 1;
+}
+
+
